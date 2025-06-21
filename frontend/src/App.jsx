@@ -8,49 +8,29 @@ import ReportForm from './components/ReportForm';
 import SocialMediaFeed from './components/SocialMediaFeed';
 import RealTimeUpdates from './components/RealTimeUpdates';
 import './App.css';
+
 const App = () => {
-  const [currentUser] = useState(null);
+  const [currentUser] = useState(null); // Set to null or fetch as needed
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [disasters, setDisasters] = useState([]);
+  const [disasters, setDisasters] = useState([]); // Start with empty array
   const [loading, setLoading] = useState(false);
   const [editingDisaster, setEditingDisaster] = useState(null);
   const [showUpdates, setShowUpdates] = useState(true);
   const [notification, setNotification] = useState(null);
-<<<<<<< HEAD
-  const { connected, updates, connectionError } = useSocket();
-
-=======
   const { connected, updates } = useSocket();
->>>>>>> e8f9f6ea2b74831771aa3e30bf813b394172f4cd
+
   useEffect(() => {
     const loadData = async () => {
       try {
-        setLoading(true);
-        console.log('Loading disasters data...');
         const data = await apiService.getDisasters();
-        console.log('Disasters loaded:', data);
         setDisasters(data.disasters || []);
-        console.log('Disasters state set:', data.disasters || []);
       } catch (error) {
         console.error('Failed to load disasters:', error);
-        setDisasters([]);
-      } finally {
-        setLoading(false);
       }
     };
     loadData();
   }, []);
-<<<<<<< HEAD
 
-  // Show WebSocket connection error notifications
-  useEffect(() => {
-    if (connectionError) {
-      showNotification(`WebSocket connection failed: ${connectionError}`, 'error');
-    }
-  }, [connectionError]);
-
-=======
->>>>>>> e8f9f6ea2b74831771aa3e30bf813b394172f4cd
   const handleSaveDisaster = async (data) => {
     try {
       let result;
@@ -69,6 +49,7 @@ const App = () => {
       throw new Error('Failed to save disaster');
     }
   };
+
   const handleDeleteDisaster = async (id) => {
     if (!window.confirm('Are you sure you want to delete this disaster?')) return;
     try {
@@ -79,25 +60,29 @@ const App = () => {
       showNotification('Failed to delete disaster', 'error');
     }
   };
+
   const handleReportSubmit = async (data) => {
     try {
-      const result = await apiService.createReport(data);
-      showNotification(result.message || 'Report submitted successfully!', 'success');
-      // Optionally, you could add the new report to a state to display it
+      await apiService.createReport(data);
+      showNotification('Report submitted successfully!', 'success');
     } catch (error) {
-      showNotification(error.message || 'Failed to submit report.', 'error');
+      console.error('Failed to submit report:', error);
+      showNotification('Failed to submit report. Please try again.', 'error');
     }
   };
+
   const showNotification = (message, type = 'info') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 6000);
   };
+
   const stats = {
     total: disasters.length,
     active: disasters.filter(d => d.status === 'Active').length,
     reports: 27,
     resources: 156
   };
+
   const renderContent = () => {
     if (loading) {
       return <div className="loading">Loading disaster data...</div>;
@@ -110,13 +95,7 @@ const App = () => {
           <div>
             <div className="flex justify-between items-center" style={{ marginBottom: '24px' }}>
               <h2>Disaster Management</h2>
-              <button
-                className="btn btn--primary"
-                onClick={() => {
-                  setEditingDisaster(null);
-                  setActiveTab('create-disaster');
-                }}
-              >
+              <button className="btn btn--primary" onClick={() => setActiveTab('create-disaster')}>
                 Create New Disaster
               </button>
             </div>
@@ -216,6 +195,7 @@ const App = () => {
         return <Dashboard disasters={disasters} stats={stats} />;
     }
   };
+
   return (
     <div className="app">
       <header className="header">
@@ -226,11 +206,7 @@ const App = () => {
               <span>Logged in as: <strong>{currentUser?.username}</strong> ({currentUser?.role})</span>
               <div className={`connection-status connection-status--${connected ? 'connected' : 'disconnected'}`}>
                 <span className="status-dot"></span>
-<<<<<<< HEAD
-                {connected ? 'WebSocket Connected' : connectionError ? 'Connection Failed' : 'Connecting...'}
-=======
-                {connected ? 'WebSocket Connected' : 'Connecting....'}
->>>>>>> e8f9f6ea2b74831771aa3e30bf813b394172f4cd
+                {connected ? 'WebSocket Connected' : 'Demo Mode'}
               </div>
             </div>
           </div>
@@ -271,4 +247,5 @@ const App = () => {
     </div>
   );
 };
+
 export default App;
