@@ -1,7 +1,7 @@
 // constants.js
 
-export const API_BASE_URL = 'http://localhost:5000/api';
-export const SOCKET_URL = 'http://localhost:5000';
+export const API_BASE_URL = 'https://disaster-response-platform-backend.onrender.com/api';
+export const SOCKET_URL = 'https://disaster-response-platform-backend.onrender.com/';
 
 export const apiService = {
   async getDisasters(filters = {}) {

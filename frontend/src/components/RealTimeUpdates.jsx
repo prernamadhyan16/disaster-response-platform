@@ -10,7 +10,7 @@ const RealTimeUpdates = ({ updates, connected, onClose }) => {
       <div className="realtime-updates__content">
         <div className={`connection-status connection-status--${connected ? 'connected' : 'disconnected'}`}>
           <span className="status-dot"></span>
-          {connected ? 'WebSocket Connected' : 'Demo Mode (Mock Updates)'}
+          {connected ? 'WebSocket Connected' : 'Connecting.....'}
         </div>
         {updates.map((update, index) => (
           <div key={index} className="update-item">

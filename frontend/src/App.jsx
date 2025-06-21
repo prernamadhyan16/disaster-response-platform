@@ -8,17 +8,15 @@ import ReportForm from './components/ReportForm';
 import SocialMediaFeed from './components/SocialMediaFeed';
 import RealTimeUpdates from './components/RealTimeUpdates';
 import './App.css';
-
 const App = () => {
-  const [currentUser] = useState(null); // Set to null or fetch as needed
+  const [currentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [disasters, setDisasters] = useState([]); // Start with empty array
+  const [disasters, setDisasters] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingDisaster, setEditingDisaster] = useState(null);
   const [showUpdates, setShowUpdates] = useState(true);
   const [notification, setNotification] = useState(null);
   const { connected, updates } = useSocket();
-
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -30,7 +28,6 @@ const App = () => {
     };
     loadData();
   }, []);
-
   const handleSaveDisaster = async (data) => {
     try {
       let result;
@@ -49,7 +46,6 @@ const App = () => {
       throw new Error('Failed to save disaster');
     }
   };
-
   const handleDeleteDisaster = async (id) => {
     if (!window.confirm('Are you sure you want to delete this disaster?')) return;
     try {
@@ -60,23 +56,19 @@ const App = () => {
       showNotification('Failed to delete disaster', 'error');
     }
   };
-
   const handleReportSubmit = async (data) => {
     showNotification('Report submitted successfully! Backend would process this via API endpoints.', 'success');
   };
-
   const showNotification = (message, type = 'info') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 6000);
   };
-
   const stats = {
     total: disasters.length,
     active: disasters.filter(d => d.status === 'Active').length,
     reports: 27,
     resources: 156
   };
-
   const renderContent = () => {
     if (loading) {
       return <div className="loading">Loading disaster data...</div>;
@@ -89,7 +81,13 @@ const App = () => {
           <div>
             <div className="flex justify-between items-center" style={{ marginBottom: '24px' }}>
               <h2>Disaster Management</h2>
-              <button className="btn btn--primary" onClick={() => setActiveTab('create-disaster')}>
+              <button
+                className="btn btn--primary"
+                onClick={() => {
+                  setEditingDisaster(null);
+                  setActiveTab('create-disaster');
+                }}
+              >
                 Create New Disaster
               </button>
             </div>
@@ -189,7 +187,6 @@ const App = () => {
         return <Dashboard disasters={disasters} stats={stats} />;
     }
   };
-
   return (
     <div className="app">
       <header className="header">
@@ -200,7 +197,7 @@ const App = () => {
               <span>Logged in as: <strong>{currentUser?.username}</strong> ({currentUser?.role})</span>
               <div className={`connection-status connection-status--${connected ? 'connected' : 'disconnected'}`}>
                 <span className="status-dot"></span>
-                {connected ? 'WebSocket Connected' : 'Demo Mode'}
+                {connected ? 'WebSocket Connected' : 'Connecting....'}
               </div>
             </div>
           </div>
@@ -241,5 +238,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
