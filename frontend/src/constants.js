@@ -1,26 +1,19 @@
-// constants.js
-
-export const API_BASE_URL = 'http://localhost:5000/api';
-export const SOCKET_URL = 'http://localhost:5000/';
-
+export const API_BASE_URL = 'https://disaster-response-platform-backend.onrender.com/api';
+export const SOCKET_URL = 'https://disaster-response-platform-backend.onrender.com/';
 export const apiService = {
   async getDisasters(filters = {}) {
     try {
       console.log('Fetching disasters from:', `${API_BASE_URL}/disasters`);
       const response = await fetch(`${API_BASE_URL}/disasters`);
       console.log('Response status:', response.status);
-      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
       const data = await response.json();
       console.log('Disasters data received:', data);
-      
       return data;
     } catch (error) {
       console.error('Error fetching disasters:', error);
-      // Return mock data for development
       return {
         disasters: [
           {
@@ -45,7 +38,6 @@ export const apiService = {
       };
     }
   },
-
   async createDisaster(data) {
     try {
       const response = await fetch(`${API_BASE_URL}/disasters`, {
@@ -64,7 +56,6 @@ export const apiService = {
       throw new Error('Failed to create disaster');
     }
   },
-
   async updateDisaster(id, data) {
     try {
       const response = await fetch(`${API_BASE_URL}/disasters/${id}`, {
@@ -83,7 +74,6 @@ export const apiService = {
       throw new Error('Failed to update disaster');
     }
   },
-
   async deleteDisaster(id) {
     try {
       const response = await fetch(`${API_BASE_URL}/disasters/${id}`, {
@@ -98,7 +88,6 @@ export const apiService = {
       throw new Error('Failed to delete disaster');
     }
   },
-
   async extractLocation(description) {
     try {
       const response = await fetch(`${API_BASE_URL}/geocoding/extract-location`, {
@@ -117,7 +106,6 @@ export const apiService = {
       throw new Error('Failed to extract location');
     }
   },
-
   async verifyImage(disasterId, imageUrl) {
     try {
       const response = await fetch(`${API_BASE_URL}/verification/verify-image`, {
@@ -136,7 +124,6 @@ export const apiService = {
       throw new Error('Failed to verify image');
     }
   },
-
   async createReport(reportData) {
     try {
       const response = await fetch(`${API_BASE_URL}/reports`, {
@@ -155,13 +142,10 @@ export const apiService = {
       throw new Error('Failed to create report');
     }
   },
-
   async getSocialMedia(disasterId, keywords = null) {
     try {
-      // Use provided keywords or fallback to default
       const searchKeywords = keywords || ['emergency', 'disaster', 'help'];
       console.log('Using keywords for social media search:', searchKeywords);
-
       const response = await fetch(`${API_BASE_URL}/social-media/posts`, {
         method: 'POST',
         headers: {
@@ -172,15 +156,12 @@ export const apiService = {
           keywords: searchKeywords
         })
       });
-      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
       return await response.json();
     } catch (error) {
       console.error('Error fetching social media:', error);
-      // Return mock data for development
       return {
         posts: [
           {
@@ -259,21 +240,16 @@ export const apiService = {
       };
     }
   },
-
-  // Helper function to extract keywords from text
   extractKeywords(text) {
     const commonKeywords = [
       'flood', 'earthquake', 'fire', 'storm', 'hurricane', 'tornado',
       'emergency', 'disaster', 'rescue', 'help', 'urgent', 'critical',
       'evacuation', 'shelter', 'medical', 'supplies', 'damage'
     ];
-    
     const words = text.toLowerCase().split(/\s+/);
     const extracted = commonKeywords.filter(keyword => 
       words.some(word => word.includes(keyword))
     );
-    
-    // If no keywords found, use some default ones
     return extracted.length > 0 ? extracted : ['emergency', 'disaster', 'help'];
   }
 }; 
