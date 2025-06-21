@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-websocket": "node test-websocket.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +24,8 @@
     "puppeteer": "^22.13.1",
     "socket.io": "^4.8.1",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.1"
   }
 }

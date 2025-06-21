@@ -31,12 +31,17 @@ class SocialMediaService {
 
   async getSocialMediaPosts(keywords, disasterId) {
     const cacheKey = `social_v2_${keywords.join('_')}`;
+    console.log('Cache key generated:', cacheKey);
+    console.log('Keywords for cache:', keywords);
+    
     const cachedResult = await CacheService.get(cacheKey);
     
     if (cachedResult) {
-      console.log('Social media cache hit');
+      console.log('Social media cache hit for key:', cacheKey);
       return cachedResult;
     }
+
+    console.log('No cache hit, fetching fresh data for key:', cacheKey);
 
     let posts = [];
 

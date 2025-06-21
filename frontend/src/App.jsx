@@ -17,19 +17,33 @@ const App = () => {
   const [editingDisaster, setEditingDisaster] = useState(null);
   const [showUpdates, setShowUpdates] = useState(true);
   const [notification, setNotification] = useState(null);
-  const { connected, updates } = useSocket();
+  const { connected, updates, connectionError } = useSocket();
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        setLoading(true);
+        console.log('Loading disasters data...');
         const data = await apiService.getDisasters();
+        console.log('Disasters loaded:', data);
         setDisasters(data.disasters || []);
+        console.log('Disasters state set:', data.disasters || []);
       } catch (error) {
         console.error('Failed to load disasters:', error);
+        setDisasters([]);
+      } finally {
+        setLoading(false);
       }
     };
     loadData();
   }, []);
+
+  // Show WebSocket connection error notifications
+  useEffect(() => {
+    if (connectionError) {
+      showNotification(`WebSocket connection failed: ${connectionError}`, 'error');
+    }
+  }, [connectionError]);
 
   const handleSaveDisaster = async (data) => {
     try {
@@ -200,7 +214,7 @@ const App = () => {
               <span>Logged in as: <strong>{currentUser?.username}</strong> ({currentUser?.role})</span>
               <div className={`connection-status connection-status--${connected ? 'connected' : 'disconnected'}`}>
                 <span className="status-dot"></span>
-                {connected ? 'WebSocket Connected' : 'Demo Mode'}
+                {connected ? 'WebSocket Connected' : connectionError ? 'Connection Failed' : 'Connecting...'}
               </div>
             </div>
           </div>
