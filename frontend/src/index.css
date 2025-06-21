@@ -1,0 +1,7 @@
+/* index.css - Minimal CSS reset for Vite React app */
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
