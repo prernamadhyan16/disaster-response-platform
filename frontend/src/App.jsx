@@ -76,7 +76,13 @@ const App = () => {
   };
 
   const handleReportSubmit = async (data) => {
-    showNotification('Report submitted successfully! Backend would process this via API endpoints.', 'success');
+    try {
+      const result = await apiService.createReport(data);
+      showNotification(result.message || 'Report submitted successfully!', 'success');
+      // Optionally, you could add the new report to a state to display it
+    } catch (error) {
+      showNotification(error.message || 'Failed to submit report.', 'error');
+    }
   };
 
   const showNotification = (message, type = 'info') => {

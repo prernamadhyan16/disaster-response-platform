@@ -3,7 +3,7 @@ const router = express.Router();
 const verificationController = require('../controllers/verificationController');
 const rateLimit = require('../middlewares/rateLimit');
 
-router.post('/:id/verify-image', 
+router.post('/verify-image', 
   rateLimit.verificationLimiter, 
   verificationController.verifyImage
 );

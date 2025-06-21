@@ -36,7 +36,12 @@ const ReportForm = ({ disasters, onSubmit }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit({ ...formData, verification_result: verificationResult });
+      const reportData = {
+        ...formData,
+        verification_status: verificationResult?.verified ? 'verified' : 'unverified',
+        verification_details: verificationResult || {}
+      };
+      await onSubmit(reportData);
       setFormData({ disaster_id: '', content: '', image_url: '' });
       setVerificationResult(null);
     } catch (error) {

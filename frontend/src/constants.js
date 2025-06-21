@@ -137,6 +137,25 @@ export const apiService = {
     }
   },
 
+  async createReport(reportData) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reports`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData)
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating report:', error);
+      throw new Error('Failed to create report');
+    }
+  },
+
   async getSocialMedia(disasterId, keywords = null) {
     try {
       // Use provided keywords or fallback to default

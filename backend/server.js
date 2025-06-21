@@ -10,6 +10,7 @@ const socialMediaRoutes = require('./routes/socialMedia');
 const resourceRoutes = require('./routes/resources');
 const updateRoutes = require('./routes/updates');
 const verificationRoutes = require('./routes/verification');
+const reportRoutes = require('./routes/reports');
 const { setupScheduledTasks } = require('./utils/scheduler');
 
 const app = express();
@@ -45,6 +46,7 @@ app.use('/api/social-media', socialMediaRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/updates', updateRoutes);
 app.use('/api/verification', verificationRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

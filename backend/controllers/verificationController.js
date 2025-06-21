@@ -1,23 +1,20 @@
 const geminiService = require('../services/geminiService');
 const supabase = require('../config/supabase');
+const Disaster = require('../models/disasterModel');
 
 class VerificationController {
   async verifyImage(req, res) {
     try {
-      const { id } = req.params;
-      const { imageUrl } = req.body;
+      const { disasterId, imageUrl } = req.body;
 
-      if (!imageUrl) {
-        return res.status(400).json({ error: 'Image URL is required' });
+      if (!imageUrl || !disasterId) {
+        return res.status(400).json({ 
+          error: 'Image URL and Disaster ID are required for verification' 
+        });
       }
 
-      const { data: disaster, error: disasterError } = await supabase
-        .from('disasters')
-        .select('id, title')
-        .eq('id', id)
-        .single();
-
-      if (disasterError || !disaster) {
+      const disaster = await Disaster.getById(disasterId);
+      if (!disaster) {
         return res.status(404).json({ error: 'Disaster not found' });
       }
 
@@ -26,7 +23,7 @@ class VerificationController {
       const { data: report, error: reportError } = await supabase
         .from('reports')
         .insert({
-          disaster_id: id,
+          disaster_id: disasterId,
           user_id: req.user?.id || 'anonymous',
           image_url: imageUrl,
           verification_status: verificationResult.authentic ? 'verified' : 'suspicious',
@@ -40,7 +37,7 @@ class VerificationController {
       }
 
       res.json({
-        disasterId: id,
+        disasterId: disasterId,
         imageUrl,
         verification: verificationResult,
         reportId: report?.id,
