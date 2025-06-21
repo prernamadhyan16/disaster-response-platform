@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../constants';
 import { io } from 'socket.io-client';
-
-const socket = io('http://localhost:5000', { transports: ['websocket', 'polling'] });
+const socket = io('https://disaster-response-platform-backend.onrender.com/', { transports: ['websocket', 'polling'] });
 
 const DisasterForm = ({ disaster, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     title: disaster?.title || '',
     location_name: disaster?.location_name || '',
     description: disaster?.description || '',
-    tags: disaster?.tags || [],
+    tags: Array.isArray(disaster?.tags) ? disaster.tags : [],
     severity: disaster?.severity || 1
   });
   const [loading, setLoading] = useState(false);
@@ -18,23 +17,27 @@ const DisasterForm = ({ disaster, onSave, onCancel }) => {
   const [success, setSuccess] = useState('');
   const [disasterTypes, setDisasterTypes] = useState([]);
   const [severityLevels, setSeverityLevels] = useState([]);
-  const [disasters, setDisasters] = useState([]);
 
   useEffect(() => {
+    let mounted = true;
     async function fetchTypes() {
       try {
         const types = await apiService.getDisasterTypes();
-        setDisasterTypes(types);
+        if (mounted) setDisasterTypes(Array.isArray(types) ? types : []);
       } catch (err) {
-        setError('Failed to load disaster types');
+        if (mounted) setError('Failed to load disaster types');
       }
     }
     fetchTypes();
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
-    // Fetch disaster types from backend
-    apiService.getSeverityLevels().then(setSeverityLevels);
+    let mounted = true;
+    apiService.getSeverityLevels().then(levels => {
+      if (mounted) setSeverityLevels(Array.isArray(levels) ? levels : []);
+    });
+    return () => { mounted = false; };
   }, []);
 
   const handleChange = (e) => {
@@ -114,6 +117,7 @@ const DisasterForm = ({ disaster, onSave, onCancel }) => {
                 onChange={handleChange}
                 className="form-control"
               >
+                {severityLevels.length === 0 && <option>Loading...</option>}
                 {severityLevels.map(level => (
                   <option key={level.value} value={level.value}>
                     {level.label}
@@ -160,6 +164,7 @@ const DisasterForm = ({ disaster, onSave, onCancel }) => {
           <div className="form-group">
             <label className="form-label">Disaster Type Tags</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '8px' }}>
+              {disasterTypes.length === 0 && <span>Loading...</span>}
               {disasterTypes.map(type => (
                 <label key={type} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <input
@@ -187,4 +192,4 @@ const DisasterForm = ({ disaster, onSave, onCancel }) => {
   );
 };
 
-export default DisasterForm; 
+export default DisasterForm;
