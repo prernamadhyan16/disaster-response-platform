@@ -57,4 +57,8 @@ export const useSocket = () => {
     return () => clearInterval(interval);
   }, [connected]);
   return { connected, updates };
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> f85dd0d3a722d4947fbdcb7f774e997dd0837c05
