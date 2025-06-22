@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../constants';
-import { io } from 'socket.io-client';
-const socket = io('https://disaster-response-platform-backend.onrender.com/', { transports: ['websocket', 'polling'] });
 
 const DisasterForm = ({ disaster, onSave, onCancel }) => {
   const [formData, setFormData] = useState({

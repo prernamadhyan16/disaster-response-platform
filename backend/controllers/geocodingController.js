@@ -1,5 +1,23 @@
 const GeocodingService = require('../services/geocodingService');
+const geminiService = require('../services/geminiService');
+
 class GeocodingController {
+  async extractLocation(req, res) {
+    try {
+      const { description } = req.body;
+      if (!description) {
+        return res.status(400).json({ error: 'Description is required' });
+      }
+      const location_name = await geminiService.extractLocation(description);
+      if (!location_name) {
+        return res.status(404).json({ error: 'Could not extract a location' });
+      }
+      res.json({ location_name });
+    } catch (error) {
+      console.error('Location extraction error:', error);
+      res.status(500).json({ error: 'Location extraction failed' });
+    }
+  }
   async geocode(req, res) {
     try {
       const { location } = req.body;
